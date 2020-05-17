@@ -5,9 +5,8 @@ A CLI to setup apps like a [Create React App](https://github.com/facebook/create
 ## Installation
 
 ```bash
-deno run \
+deno install \
   --unstable \
-  --importmap=import_map.json \
   --allow-net \
   --allow-read \
   --allow-write \

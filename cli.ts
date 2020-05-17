@@ -1,6 +1,6 @@
-import { bold, gray, green, red, yellow } from 'fmt/mod.ts'
-import { parse, Args as _Args } from 'flags/mod.ts'
-import { readZip } from 'zip/mod.ts'
+import { bold, gray, green, red, yellow } from 'https://deno.land/x/std@0.51.0/fmt/mod.ts'
+import { parse, Args as _Args } from 'https://deno.land/x/std@0.51.0/flags/mod.ts'
+import { readZip } from 'https://raw.githubusercontent.com/anthonychu/deno-zip/std-v0.51.0/mod.ts'
 
 const DEFAULT_REPO = 'alreadyExisted/das-react-template'
 const DEFAULT_BRANCH_NAME = 'master'
