@@ -5,7 +5,15 @@ A CLI to setup apps like a [Create React App](https://github.com/facebook/create
 ## Installation
 
 ```bash
-deno run --unstable --importmap=import_map.json --allow-net --allow-read --allow-write --allow-run -f -n das https://raw.githubusercontent.com/alreadyExisted/deno_app_setuper/master/cli.ts
+deno run \
+  --unstable \
+  --importmap=import_map.json \
+  --allow-net \
+  --allow-read \
+  --allow-write \
+  --allow-run \
+  -f -n das \
+  https://raw.githubusercontent.com/alreadyExisted/deno_app_setuper/master/cli.ts
 ```
 
 ## Usage
