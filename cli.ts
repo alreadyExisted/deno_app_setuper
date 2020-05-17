@@ -1,6 +1,6 @@
 import { bold, gray, green, red, yellow } from 'https://deno.land/x/std@0.51.0/fmt/mod.ts'
 import { parse, Args as _Args } from 'https://deno.land/x/std@0.51.0/flags/mod.ts'
-import { readZip } from 'https://raw.githubusercontent.com/anthonychu/deno-zip/std-v0.51.0/mod.ts'
+import { readZip } from 'https://deno.land/x/jszip/mod.ts'
 
 const DEFAULT_REPO = 'alreadyExisted/das-react-template'
 const DEFAULT_BRANCH_NAME = 'master'
@@ -29,7 +29,7 @@ async function cli(): Promise<void> {
   await installDependencies(applicationName)
 
   console.log()
-  console.log(bold(green('Success 🤖🤖🤖!!!')))
+  console.log(bold(`Success 🤖🤖🤖!!! Created app at ${`green(${Deno.cwd()}/${applicationName}`}`))
 }
 
 if (import.meta.main) {
@@ -86,10 +86,18 @@ async function installDependencies(applicationName: string) {
   } catch {
     isYarn = false
   }
-  const p = Deno.run({
-    cmd: [isYarn ? 'yarn' : 'npm', 'install'],
-    cwd: applicationName
-  })
-  console.log(await p.status())
+  await exec(['git', 'init'], applicationName)
+  console.log(`${green('success')} Initialized git repo...`)
+  await exec([isYarn ? 'yarn' : 'npm', 'install'], applicationName)
   console.log(`${green('success')} Dependencies installed...`)
+}
+
+async function exec(args: string[], cwd: string) {
+  const proc = await Deno.run({ cmd: args, cwd }).status()
+
+  if (proc.success == false) {
+    Deno.exit(proc.code)
+  }
+
+  return proc
 }

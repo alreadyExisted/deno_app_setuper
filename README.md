@@ -12,7 +12,7 @@ deno install \
   --allow-write \
   --allow-run \
   -f -n das \
-  https://raw.githubusercontent.com/alreadyExisted/deno_app_setuper/master/cli.ts
+  https://deno.land/x/deno_app_setuper/cli.ts
 ```
 
 If after install show message:
@@ -25,7 +25,14 @@ If after install show message:
 Add deno to paths
 
 ```bash
+# temporary solution
 export PATH="/Users/<user>/.deno/bin:$PATH"
+```
+
+```bash
+# best solution
+sudo nano /etc/paths
+# add to paths -> /Users/<user>/.deno/bin
 ```
 
 ## Usage
