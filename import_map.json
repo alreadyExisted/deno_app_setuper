@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "flags/": "https://deno.land/x/std@0.51.0/flags/",
+    "fmt/": "https://deno.land/x/std@0.51.0/fmt/",
+    "zip/": "https://raw.githubusercontent.com/anthonychu/deno-zip/std-v0.51.0/"
+  }
+}
