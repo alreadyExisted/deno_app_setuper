@@ -29,7 +29,7 @@ async function cli(): Promise<void> {
   await installDependencies(applicationName)
 
   console.log()
-  console.log(bold(`Success 🤖🤖🤖!!! Created app at ${`green(${Deno.cwd()}/${applicationName}`}`))
+  console.log(bold(`Success 🤖🤖🤖!!! Created app at ${green(`${Deno.cwd()}/${applicationName}`)}`))
 }
 
 if (import.meta.main) {
@@ -90,6 +90,8 @@ async function installDependencies(applicationName: string) {
   console.log(`${green('success')} Initialized git repo...`)
   await exec([isYarn ? 'yarn' : 'npm', 'install'], applicationName)
   console.log(`${green('success')} Dependencies installed...`)
+  await exec(['git', 'add', '.'], applicationName)
+  await exec(['git', 'commit', '-m', 'Init repo'], applicationName)
 }
 
 async function exec(args: string[], cwd: string) {
