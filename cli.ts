@@ -1,5 +1,6 @@
-import { bold, gray, green, red, yellow } from 'https://deno.land/x/std@0.51.0/fmt/mod.ts'
-import { parse, Args as _Args } from 'https://deno.land/x/std@0.51.0/flags/mod.ts'
+import { bold, gray, green, red, yellow } from 'https://deno.land/x/std@0.59.0/fmt/colors.ts'
+import { parse, Args as _Args } from 'https://deno.land/x/std@0.59.0/flags/mod.ts'
+import { join } from 'https://deno.land/std@v0.59.0/path/mod.ts'
 import { readZip } from 'https://deno.land/x/jszip/mod.ts'
 
 const DEFAULT_REPO = 'alreadyExisted/das-react-template'
@@ -13,7 +14,7 @@ async function cli(): Promise<void> {
   const args = parse(Deno.args) as Args
   const applicationName = (args._[0] || DEFAULT_BRANCH_NAME) as string
 
-  console.log(bold(`Creating a new app in ${green(`${Deno.cwd()}/${applicationName}`)}`))
+  console.log(bold(`Creating a new app in ${green(join(Deno.cwd(), applicationName))}`))
   console.log()
 
   const fullRepoName = args.template || DEFAULT_REPO
@@ -26,10 +27,12 @@ async function cli(): Promise<void> {
 
   await unzipTemplateArchive(archiveFileName, applicationName)
 
+  await fetchGitConfigs(fullRepoName, versionName, applicationName)
+
   await installDependencies(applicationName)
 
   console.log()
-  console.log(bold(`Success 🤖🤖🤖!!! Created app at ${green(`${Deno.cwd()}/${applicationName}`)}`))
+  console.log(bold(`Success 🤖🤖🤖!!! Created app at ${green(join(Deno.cwd(), applicationName))}`))
 }
 
 if (import.meta.main) {
@@ -77,18 +80,40 @@ async function unzipTemplateArchive(archiveFileName: string, applicationName: st
   console.log(`${green('success')} ${yellow(_fileName)} removed...`)
 }
 
+async function fetchGitConfigs(fullRepoName: string, versionName: string, applicationName: string) {
+  console.log(`${gray('[6/7]')} 🚚 Fetching .gitignore and .gitattributes...`)
+  try {
+    const response = await fetch(`https://raw.githubusercontent.com/${fullRepoName}/${versionName}/.gitignore`)
+    const body = new Uint8Array(await response.arrayBuffer())
+    await Deno.writeFile(join(applicationName, '.gitignore'), body)
+    console.log(`${green('success')} ${yellow(`.gitignore`)} downloaded...`)
+  } catch {
+    console.log(`${red('fail')} Fetching .gitignore...`)
+  }
+  try {
+    const response = await fetch(`https://raw.githubusercontent.com/${fullRepoName}/${versionName}/.gitattributes`)
+    const body = new Uint8Array(await response.arrayBuffer())
+    await Deno.writeFile(join(applicationName, '.gitattributes'), body)
+    console.log(`${green('success')} ${yellow(`.gitattributes`)} downloaded...`)
+  } catch {
+    console.log(`${red('fail')} Fetching .gitattributes...`)
+  }
+}
+
 async function installDependencies(applicationName: string) {
-  console.log(`${gray('[6/6]')} 💿 Install dependencies...`)
+  console.log(`${gray('[7/7]')} 💿 Install dependencies...`)
   let isYarn
   try {
-    await Deno.stat(`${applicationName}/yarn.lock`)
+    await Deno.stat(join(applicationName, 'yarn.lock'))
     isYarn = true
   } catch {
     isYarn = false
   }
   await exec(['git', 'init'], applicationName)
   console.log(`${green('success')} Initialized git repo...`)
-  await exec([isYarn ? 'yarn' : 'npm', 'install'], applicationName)
+  const packageManager = isYarn ? 'yarn' : 'npm'
+  const nativeTerminalArgs = Deno.build.os === 'windows' ? ['cmd', '/c'] : []
+  await exec([...nativeTerminalArgs, packageManager, 'install'], applicationName)
   console.log(`${green('success')} Dependencies installed...`)
   await exec(['git', 'add', '.'], applicationName)
   await exec(['git', 'commit', '-m', 'Init repo'], applicationName)
