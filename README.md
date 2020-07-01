@@ -5,14 +5,7 @@ A CLI to setup apps like a [Create React App](https://github.com/facebook/create
 ## Installation
 
 ```bash
-deno install \
-  --unstable \
-  --allow-net \
-  --allow-read \
-  --allow-write \
-  --allow-run \
-  -f -n das \
-  https://deno.land/x/deno_app_setuper/cli.ts
+deno install --unstable --allow-net --allow-read --allow-write --allow-run  -f -n das https://deno.land/x/deno_app_setuper/cli.ts
 ```
 
 If after install show message:
